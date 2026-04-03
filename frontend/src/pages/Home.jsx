@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { API } from "../config";
 
 export default function Home() {
   const navigate = useNavigate();

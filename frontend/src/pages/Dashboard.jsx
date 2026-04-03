@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import { Trophy, DollarSign, Heart, Ticket } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
+import { API } from "../config";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -39,17 +40,19 @@ export default function Dashboard() {
     };
 
     fetchData();
+  }, []);
 
     // ✅ REAL-TIME UPDATE
-    socket.on("update", () => {
-      const updatedScores = JSON.parse(localStorage.getItem("scores")) || [];
-      setScores(updatedScores);
-    });
+    useEffect(() => {
+  const socket = io(API);
 
-    return () => {
-      socket.off("update");
-    };
-  }, []);
+  socket.on("update", () => {
+    const updatedScores = JSON.parse(localStorage.getItem("scores")) || [];
+    setScores(updatedScores);
+  });
+
+  return () => socket.disconnect();
+}, []);
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">

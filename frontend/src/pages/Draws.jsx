@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
+import { API } from "../config";
 
 export default function Draws() {
   const [scores, setScores] = useState([]);
@@ -19,7 +20,7 @@ export default function Draws() {
       });
 
     // fetch draws
-    fetch(`${API}/api/scores`)
+    fetch(`${API}/api/draws`)
       .then(res => res.json())
       .then(data => setDraws(data));
   }, []);

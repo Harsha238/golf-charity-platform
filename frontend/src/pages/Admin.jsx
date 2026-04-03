@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { Shield, Trophy, Heart, Users } from "lucide-react";
 import { io } from "socket.io-client";
+import { API } from "../config";
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState("draws");
@@ -129,7 +130,7 @@ const socket = io(API);
   try {
     console.log("RUN DRAW CLICKED:", id);
 
-    const res = await fetch(`http://localhost:5000/api/draw/run/${id}`, {
+    const res = await fetch(`${API}/api/draw/run/${id}`, {
       method: "POST"
     });
 

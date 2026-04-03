@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
+import { API } from "../config";
 
 export default function Charities() {
   const [selectedCharity, setSelectedCharity] = useState(null);

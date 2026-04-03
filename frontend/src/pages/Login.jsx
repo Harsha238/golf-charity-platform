@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { API } from "../config";
 
 export default function Login() {
   const [name, setName] = useState("");
