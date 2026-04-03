@@ -41,7 +41,7 @@ export default function MyScores() {
 
     // ✅ SAVE TO BACKEND (IMPORTANT FIX)
     try {
-  const res = await fetch("http://localhost:5000/api/scores", {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/scores`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

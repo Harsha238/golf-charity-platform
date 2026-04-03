@@ -24,13 +24,13 @@ export default function AdminPanel() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/winners")
+    fetch(`${import.meta.env.VITE_API_URL}/api/scores`)
       .then(res => res.json())
       .then(data => setWinners(data));
   }, []);
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    const socket = io(import.meta.env.VITE_API_URL);
 
     socket.on("newWinner", (newWinner) => {
       setWinners((prev) => {
@@ -55,7 +55,7 @@ export default function AdminPanel() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/draw")
+    fetch(`${import.meta.env.VITE_API_URL}/api/scores`)
       .then(res => res.json())
       .then(data => setDraws(data));
   }, []);
@@ -108,7 +108,7 @@ export default function AdminPanel() {
         return;
       }
 
-      const res = await fetch("http://localhost:5000/api/draw/create", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/scores`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: Number(amount) })
@@ -140,7 +140,7 @@ export default function AdminPanel() {
     }
 
     // ✅ refresh draws
-    const updated = await fetch("http://localhost:5000/api/draw")
+    const updated = await fetch(`${import.meta.env.VITE_API_URL}/api/scores`)
       .then(res => res.json());
 
     setDraws(updated);

@@ -11,14 +11,14 @@ export default function Draws() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     // fetch scores
-    fetch("http://localhost:5000/api/scores")
+    fetch(`${import.meta.env.VITE_API_URL}/api/scores`)
       .then(res => res.json())
       .then(data => {
         setScores(data);
       });
 
     // fetch draws
-    fetch("http://localhost:5000/api/draw")
+    fetch(`${import.meta.env.VITE_API_URL}/api/scores`)
       .then(res => res.json())
       .then(data => setDraws(data));
   }, []);
