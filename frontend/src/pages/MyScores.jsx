@@ -7,6 +7,7 @@ export default function MyScores() {
   const [date, setDate] = useState("");
   const [scores, setScores] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
 
   // ✅ Load from localStorage (UI only)
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function MyScores() {
 
     // ✅ SAVE TO BACKEND (IMPORTANT FIX)
     try {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/scores`, {
+  const res = await fetch(`${API}/api/scores`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

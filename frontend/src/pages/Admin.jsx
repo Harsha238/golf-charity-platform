@@ -14,6 +14,7 @@ export default function AdminPanel() {
   const [draws, setDraws] = useState([]);
   const [amount, setAmount] = useState(1000);
   const [isOpen, setIsOpen] = useState(false);
+  const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
 
   const [form, setForm] = useState({
     name: "",
@@ -24,13 +25,15 @@ export default function AdminPanel() {
   });
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/scores`)
+    fetch(`${API}/api/scores`)
       .then(res => res.json())
       .then(data => setWinners(data));
   }, []);
 
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_API_URL);
+    const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
+
+const socket = io(API);
 
     socket.on("newWinner", (newWinner) => {
       setWinners((prev) => {
@@ -55,7 +58,7 @@ export default function AdminPanel() {
   }, []);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/scores`)
+    fetch(`${API}/api/scores`)
       .then(res => res.json())
       .then(data => setDraws(data));
   }, []);
@@ -108,7 +111,7 @@ export default function AdminPanel() {
         return;
       }
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/scores`, {
+      const res = await fetch(`${API}/api/scores`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: Number(amount) })
@@ -140,7 +143,7 @@ export default function AdminPanel() {
     }
 
     // ✅ refresh draws
-    const updated = await fetch(`${import.meta.env.VITE_API_URL}/api/scores`)
+    const updated = await fetch(`${API}/api/scores`)
       .then(res => res.json());
 
     setDraws(updated);

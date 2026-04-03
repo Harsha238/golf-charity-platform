@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const navigate = useNavigate();
+  const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
 
   return (
     <div className="bg-gradient-to-b from-white via-green-50 to-white text-center">

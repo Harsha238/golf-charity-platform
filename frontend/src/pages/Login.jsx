@@ -6,6 +6,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const location = useLocation(); // ✅ now works
+  const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
 
   const handleLogin = (e) => {
   e.preventDefault();

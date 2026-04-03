@@ -5,20 +5,21 @@ export default function Draws() {
   const [scores, setScores] = useState([]);
   const [draws, setDraws] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
 
   // ✅ FETCH DATA
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
 
     // fetch scores
-    fetch(`${import.meta.env.VITE_API_URL}/api/scores`)
+    fetch(`${API}/api/scores`)
       .then(res => res.json())
       .then(data => {
         setScores(data);
       });
 
     // fetch draws
-    fetch(`${import.meta.env.VITE_API_URL}/api/scores`)
+    fetch(`${API}/api/scores`)
       .then(res => res.json())
       .then(data => setDraws(data));
   }, []);

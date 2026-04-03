@@ -7,6 +7,7 @@ import { io } from "socket.io-client";
 export default function Dashboard() {
   const navigate = useNavigate();
   const socket = io(import.meta.env.VITE_API_URL);
+  const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
 
   const [user, setUser] = useState(null);
   const [scores, setScores] = useState([]);
@@ -17,7 +18,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const winnersRes = await fetch(`${import.meta.env.VITE_API_URL}/api/scores`);
+        const winnersRes = await fetch(`${API}/api/scores`);
         const winnersData = await winnersRes.json();
 
         // ✅ FIX: get scores from localStorage (NOT backend)
