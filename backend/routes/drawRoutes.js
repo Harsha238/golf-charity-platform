@@ -3,15 +3,13 @@ import Draw from "../models/Draw.js";
 
 const router = express.Router();
 
-// CREATE DRAW
+// ✅ CREATE DRAW
 router.post("/", async (req, res) => {
   try {
-    console.log("BODY:", req.body); // 🔥 DEBUG
-
     const { amount } = req.body;
 
     if (!amount) {
-      return res.status(400).json("Amount missing");
+      return res.status(400).json("Amount required");
     }
 
     const draw = new Draw({
@@ -25,14 +23,18 @@ router.post("/", async (req, res) => {
 
   } catch (err) {
     console.log("ERROR:", err);
-    res.status(500).json(err.message);
+    res.status(500).json("Server error");
   }
 });
 
-// GET DRAWS
+// ✅ GET DRAWS
 router.get("/", async (req, res) => {
-  const draws = await Draw.find();
-  res.json(draws);
+  try {
+    const draws = await Draw.find();
+    res.json(draws);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 export default router;

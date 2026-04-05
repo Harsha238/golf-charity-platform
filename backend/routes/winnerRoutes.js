@@ -3,11 +3,9 @@ import Winner from "../models/Winner.js";
 
 const router = express.Router();
 
+// GET WINNERS
 router.get("/", async (req, res) => {
-  const winners = await Winner.find()
-    .populate("userId", "name")
-    .sort({ createdAt: -1 });
-
+  const winners = await Winner.find().sort({ _id: -1 });
   res.json(winners);
 });
 
