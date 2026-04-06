@@ -21,6 +21,12 @@ app.use(cors({
 app.use(express.json());
 app.use("/api/winners", winnerRoutes);
 
+app.get("/debug-winners", async (req, res) => {
+  const data = await Winner.find();
+  console.log("DEBUG WINNERS:", data);
+  res.json(data);
+});
+
 // ✅ Create HTTP server
 const server = http.createServer(app);
 
