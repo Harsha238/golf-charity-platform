@@ -5,6 +5,7 @@ import http from "http";
 import { Server } from "socket.io";
 import dotenv from "dotenv";
 import winnerRoutes from "./routes/winnerRoutes.js";
+import Winner from "./models/Winner.js";
 
 import "./models/User.js";
 import apiRoutes from "./routes/api.js";
@@ -50,6 +51,22 @@ app.post("/check", (req, res) => {
 app.get("/check-deploy", (req, res) => {
   res.send("NEW CODE WORKING");
 });
+
+app.get("/forced-winner", async (req, res) => {
+  try {
+    const w = await Winner.create({
+      userId: "123",
+      name: "RenderTest",
+      score: 5,
+      prize: 1000,
+      date: new Date()
+    })
+    res.json(w);
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+});
+
 
 // ✅ DB connection
 mongoose.connect(process.env.MONGO_URI)
