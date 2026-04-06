@@ -47,6 +47,10 @@ app.post("/check", (req, res) => {
   res.send("CHECK WORKING");
 });
 
+app.get("/check-deploy", (req, res) => {
+  res.send("NEW CODE WORKING");
+});
+
 // ✅ DB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("DB connected ✅"))
