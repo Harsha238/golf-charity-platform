@@ -4,6 +4,7 @@ import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
 import dotenv from "dotenv";
+import winnerRoutes from "./routes/winnerRoutes.js";
 
 import "./models/User.js";
 import apiRoutes from "./routes/api.js";
@@ -17,6 +18,7 @@ app.use(cors({
   origin: process.env.CLIENT_URL || "*"
 }));
 app.use(express.json());
+app.use("/api/winners", winnerRoutes);
 
 // ✅ Create HTTP server
 const server = http.createServer(app);

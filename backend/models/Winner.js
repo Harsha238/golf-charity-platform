@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const winnerSchema = new mongoose.Schema({
   userId: String,
+  name: String,
   score: Number,
   prize: Number,
-  drawId: String,
-  date: { type: Date, default: Date.now }
+  date: Date
 });
 
 export default mongoose.model("Winner", winnerSchema);

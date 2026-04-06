@@ -1,0 +1,49 @@
+###
+GET http://localhost:5000/api/draw
+
+###
+POST http://localhost:5000/api/draw
+Content-Type: application/json
+
+{
+    "amount": 1000
+}
+
+
+###
+POST http://localhost:5000/api/draw/run/69d380a35a101623ab5ffe1f
+
+
+###
+POST http://localhost:5000/api/users
+Content-Type: application/json
+
+{
+    "name": "Ashu",
+    "email": "ashu@example.com"
+}
+
+
+###
+POST http://localhost:5000/api/scores
+Content-Type: application/json
+
+{
+    "name": "Ashu",
+    "value": 45,
+    "userId": "69d380715a101623ab5ffe1b"
+}
+
+###
+POST http://localhost:5000/api/draw/join
+Content-Type: application/json
+
+{
+    "drawId": "69d39fb25a101623ab5ffe27",
+    "userId": "69d39fcd5a101623ab5ffe29",
+    "numbers": [7, 15, 24, 30, 36]
+}
+
+###
+POST http://localhost:5000/api/draw/run/69d39fb25a101623ab5ffe27
+

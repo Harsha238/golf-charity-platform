@@ -10,18 +10,21 @@ const drawSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ["upcoming", "completed"],
     default: "upcoming"
   },
 
-  winningNumbers: [Number],
+  winningNumbers: {
+    type: [Number],
+    default: []
+  },
 
   players: [
     {
       userId: String,
       numbers: [Number],
       score: Number,
-      prize: Number
+      prize: Number,
+      name: String
     }
   ]
 });

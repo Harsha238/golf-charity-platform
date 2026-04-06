@@ -3,10 +3,14 @@ import Winner from "../models/Winner.js";
 
 const router = express.Router();
 
-// GET WINNERS
+// ✅ GET ALL WINNERS
 router.get("/", async (req, res) => {
-  const winners = await Winner.find().sort({ _id: -1 });
-  res.json(winners);
+  try {
+    const winners = await Winner.find().sort({ date: -1 });
+    res.json(winners);
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
 });
 
 export default router;
