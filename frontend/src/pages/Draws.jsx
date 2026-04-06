@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
-import { API } from "../config";
+
 
 export default function Draws() {
   const [scores, setScores] = useState([]);
@@ -14,15 +14,18 @@ export default function Draws() {
 
     // fetch scores
     fetch(`${API}/api/scores`)
-      .then(res => res.json())
-      .then(data => {
-        setScores(data);
-      });
+  .then(res => {
+    if (!res.ok) throw new Error("Failed to fetch scores");
+    return res.json();
+  })
+  .then(data => setScores(data))
+  .catch(err => console.error("Error fetching scores:", err));
 
     // fetch draws
-    fetch(`${API}/api/draws`)
-      .then(res => res.json())
-      .then(data => setDraws(data));
+    fetch(`${API}/api/draw`)
+  .then(res => res.json())
+  .then(data => setDraws(data))
+      .catch(err => console.error("Error fetching draws:", err));
   }, []);
 
   // ✅ USER NUMBERS
@@ -99,23 +102,24 @@ export default function Draws() {
             Draw History
           </h2>
 
-          {draws.map((draw) => {
+          {draws.map((draw, index) => {
+            
 
-            const numbers = Array.from({ length: 5 }, () =>
-              Math.floor(Math.random() * 45) + 1
-            );
+            const numbers = draw.winningNumbers || [];
 
             return (
               <div
-                key={draw._id}
+                key={draw._id || index}
                 className="bg-white p-5 rounded-xl border shadow-sm mb-4"
               >
 
                 {/* Header */}
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-2">
                   <div>
                     <h3 className="font-semibold text-gray-900">
-                      {draw.date?.slice(0, 7)}
+                      {new Date(draw.date).toDateString("default", {
+                        month: "short", year: "numeric"
+                      })}
                     </h3>
 
                     <p className="text-sm text-gray-500 mt-1">
@@ -124,17 +128,17 @@ export default function Draws() {
                   </div>
 
                   <span className={`text-xs px-3 py-1 rounded-full ${
-                    draw.status === "completed"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-gray-200 text-gray-700"
-                  }`}>
-                    {draw.status}
-                  </span>
+  draw.status === "completed"
+    ? "bg-green-100 text-green-700"
+    : "bg-yellow-100 text-yellow-700"
+}`}>
+  {draw.status}
+</span>
                 </div>
 
                 {/* Winning Numbers */}
-                {draw.status === "completed" && (
-                  <>
+                
+                  
                     <p className="text-sm text-gray-500 mt-4 mb-2">
                       WINNING NUMBERS
                     </p>
@@ -149,12 +153,12 @@ export default function Draws() {
                         </div>
                       ))}
                     </div>
-                  </>
-                )}
+                  
+                
 
                 {/* Footer */}
                 <div className="flex justify-between text-sm text-gray-600 mt-2">
-                  <p>💰 Pool: ₹{draw.amount}</p>
+                  <p>💰 Pool: ₹{draw.amount || 1000}</p>
                   <p>👥 Players: 1</p>
                 </div>
 

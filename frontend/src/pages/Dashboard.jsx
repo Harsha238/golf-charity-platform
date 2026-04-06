@@ -7,7 +7,6 @@ import { API } from "../config";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const socket = io(import.meta.env.VITE_API_URL);
   const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
 
   const [user, setUser] = useState(null);
@@ -52,7 +51,9 @@ export default function Dashboard() {
   });
 
   return () => socket.disconnect();
-}, []);
+    }, []);
+  
+  
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">

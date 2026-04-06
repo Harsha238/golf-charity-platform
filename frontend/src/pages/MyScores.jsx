@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
-import { API } from "../config";
+
 
 export default function MyScores() {
   const [score, setScore] = useState("");
@@ -43,6 +43,10 @@ export default function MyScores() {
 
     // ✅ SAVE TO BACKEND (IMPORTANT FIX)
     try {
+      if (!user) {
+  alert("User not logged in");
+  return;
+}
   const res = await fetch(`${API}/api/scores`, {
     method: "POST",
     headers: {

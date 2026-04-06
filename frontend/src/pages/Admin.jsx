@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { Shield, Trophy, Heart, Users } from "lucide-react";
 import { io } from "socket.io-client";
-import { API } from "../config";
+import { BarChart,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer } from "recharts";
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState("draws");
   const [showModal, setShowModal] = useState(false);
   const [editCharity, setEditCharity] = useState(null);
+  const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
+  const socket = io(API);
 
   const [charities, setCharities] = useState([]);
   const [winners, setWinners] = useState([]);
@@ -15,7 +17,13 @@ export default function AdminPanel() {
   const [draws, setDraws] = useState([]);
   const [amount, setAmount] = useState(1000);
   const [isOpen, setIsOpen] = useState(false);
-  const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
+  const chartData = draws
+  .filter(d => d.amount) // only valid data
+  .map((d) => ({
+    name: new Date(d.date).toLocaleDateString(),
+    amount: Number(d.amount)
+  }));
+  
 
   const [form, setForm] = useState({
     name: "",
@@ -26,43 +34,31 @@ export default function AdminPanel() {
   });
 
   useEffect(() => {
-    fetch(`${API}/api/scores`)
-      .then(res => res.json())
-      .then(data => setWinners(data));
+    fetchDraws();
+    fetchWinners();
+    fetchUsers();
   }, []);
 
   useEffect(() => {
-    const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
-
-const socket = io(API);
-
     socket.on("newWinner", (newWinner) => {
       setWinners((prev) => {
         if (prev.find(w => w._id === newWinner._id)) return prev;
         return [newWinner, ...prev];
-      });
-
+      }); 
       setActiveTab("winners");
     });
 
     return () => socket.disconnect();
   }, []);
 
-  useEffect(() => {
-    const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
-    setUsers(savedUsers);
-  }, []);
+  
 
   useEffect(() => {
     const savedCharities = JSON.parse(localStorage.getItem("charities")) || [];
     setCharities(savedCharities);
   }, []);
 
-  useEffect(() => {
-    fetch(`${API}/api/scores`)
-      .then(res => res.json())
-      .then(data => setDraws(data));
-  }, []);
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -105,56 +101,58 @@ const socket = io(API);
   });
 };
 
-  const createDraw = async () => {
-    try {
-      if (!amount) {
-        alert("Enter amount");
-        return;
-      }
+  const fetchDraws = async () => {
+  const data = await fetch(`${API}/api/draw`).then(res => res.json());
+  setDraws(data);
+};
 
-      const res = await fetch(`${API}/api/scores`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: Number(amount) })
-      });
+const fetchWinners = async () => {
+  const data = await fetch(`${API}/api/winners`).then(res => res.json());
+  setWinners(data);
+};
 
-      const data = await res.json();
-      setDraws((prev) => [data, ...prev]);
+const fetchUsers = async () => {
+  const data = await fetch(`${API}/api/users`).then(res => res.json());
+  setUsers(data);
+};
 
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const runDraw = async (id) => {
+const createDraw = async () => {
   try {
-    console.log("RUN DRAW CLICKED:", id);
-
-    const res = await fetch(`${API}/api/draw/run/${id}`, {
-      method: "POST"
+    const res = await fetch(`${API}/api/draw`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ amount: Number(amount) })
     });
 
     const data = await res.json();
 
-    console.log("RUN DRAW RESPONSE:", data);
-
-    if (!res.ok) {
-      alert(data.error || "Error running draw");
-      return;
-    }
-
-    // ✅ refresh draws
-    const updated = await fetch(`${API}/api/scores`)
-      .then(res => res.json());
-
-    setDraws(updated);
-
-    alert("Draw completed ✅");
+    fetchDraws(); // ✅ STEP 2 FIX
+    alert("Draw created ✅");
 
   } catch (err) {
-    console.log("RUN DRAW ERROR:", err);
+    console.log(err);
   }
 };
+
+  const runDraw = async (id) => {
+    try {
+      await fetch(`${API}/api/draw/run/${id}`, {
+        method: "POST"
+      });
+      fetchDraws(); // ✅ STEP 2 FIX
+      fetchWinners(); // ✅ STEP 2 FIX
+      alert("Draw completed");
+    }
+    catch (err) {
+      console.log(err);
+    }
+  };
+
+  
+  console.log("CHART DATA:", chartData);
+  console.log("DRAWS:", draws);
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
@@ -184,12 +182,62 @@ const socket = io(API);
           </div>
         </div>
 
+        {/* ✅ ADD THIS STATS SECTION HERE */}
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+
+  <div className="bg-white p-4 rounded-xl shadow">
+    <p className="text-gray-500 text-sm">Draws</p>
+    <p className="text-xl font-bold">{draws.length}</p>
+  </div>
+
+  <div className="bg-white p-4 rounded-xl shadow">
+    <p className="text-gray-500 text-sm">Winners</p>
+    <p className="text-xl font-bold">{winners.length}</p>
+  </div>
+
+  <div className="bg-white p-4 rounded-xl shadow">
+    <p className="text-gray-500 text-sm">Users</p>
+    <p className="text-xl font-bold">{users.length}</p>
+  </div>
+
+  <div className="bg-white p-4 rounded-xl shadow">
+    <p className="text-gray-500 text-sm">Pool</p>
+    <p className="text-xl font-bold">
+      ₹{draws.reduce((a, b) => a + (b.amount || 0), 0)}
+    </p>
+  </div>
+
+</div>
+
         <div className="flex gap-3 mt-6 overflow-x-auto pb-2 sticky top-0 bg-gray-100 z-10">
           <Tab label="Draws" icon={<Trophy />} active={activeTab === "draws"} onClick={() => setActiveTab("draws")} />
           <Tab label="Winners" icon={<Trophy />} active={activeTab === "winners"} onClick={() => setActiveTab("winners")} />
           <Tab label="Charities" icon={<Heart />} active={activeTab === "charities"} onClick={() => setActiveTab("charities")} />
           <Tab label="Users" icon={<Users />} active={activeTab === "users"} onClick={() => setActiveTab("users")} />
         </div>
+
+        <div className="bg-white p-6 rounded-xl shadow mt-6">
+
+  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+    Draw Analytics
+  </h2>
+
+  {chartData.length === 0 ? (
+    <p className="text-gray-400 text-center">
+      No data available
+    </p>
+  ) : (
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={chartData}>
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="amount" />
+      </BarChart>
+    </ResponsiveContainer>
+  )}
+
+</div>
 
         <div className="mt-6">
 
@@ -218,20 +266,26 @@ const socket = io(API);
 
               <div className="mt-3 space-y-3 max-h-[250px] overflow-y-auto pr-2">
                 {draws.filter(d => d.status === "upcoming").map(d => (
-                  <div key={d._id} className="p-4 border rounded-lg flex justify-between items-center">
-                    <div>
-                      <p>{d.date}</p>
-                      <p>Pool: ₹{d.amount}</p>
-                    </div>
-
-                    <button
-  onClick={() => runDraw(d._id)}
-  className="bg-green-600 text-white px-4 py-2 rounded-lg"
+                  <div
+  key={d._id}
+  className="p-4 rounded-xl bg-white shadow hover:shadow-md transition flex justify-between items-center border"
 >
-  ▶ Run Draw
-</button>
+  <div>
+    <p className="font-semibold text-gray-900">
+      {new Date(d.date).toDateString()}
+    </p>
+    <p className="text-sm text-gray-500">
+      Pool: ₹{d.amount}
+    </p>
+  </div>
 
-                  </div>
+  <button
+    onClick={() => runDraw(d._id)}
+    className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg shadow hover:scale-105 transition"
+  >
+    ▶ Run
+  </button>
+</div>
                 ))}
               </div>
 
@@ -243,21 +297,19 @@ const socket = io(API);
     .filter((d) => d.status === "completed")
     .map((draw) => {
 
-      const numbers = Array.from({ length: 5 }, () =>
-        Math.floor(Math.random() * 45) + 1
-      );
+      const numbers = draw.winningNumbers||[];
 
       return (
         <div
           key={draw._id}
-        className="bg-white p-4 rounded-xl border shadow-sm"
+        className="bg-gradient-to-br from-white to-gray-50 p-5 rounded-2xl hover:shadow-xl transition border"
         >
 
           {/* Header */}
           <div className="flex justify-between items-center mb-2">
             <div>
               <p className="font-semibold text-gray-900">
-                {draw.date?.slice(0, 7)}
+                {new Date(draw.date).toDateString()}
               </p>
               <p className="text-sm text-gray-500">
                 📅 {new Date(draw.date).toDateString()}
@@ -278,7 +330,7 @@ const socket = io(API);
             {numbers.map((n, i) => (
               <div
                 key={i}
-                className="w-8 h-8 flex items-center justify-center bg-green-600 text-white rounded-full text-sm font-semibold"
+                className="w-10 h-10 flex items-center justify-center bg-green-600 text-white rounded-full font-semibold"
               >
                 {n}
               </div>
@@ -288,7 +340,7 @@ const socket = io(API);
           {/* Footer */}
           <div className="flex justify-between text-sm text-gray-600">
             <p>💰 Pool: ₹{draw.amount}</p>
-            <p>👥 Players: 1</p>
+            <p>👥 Players: {draw.players?.length || 0}</p>
           </div>
 
         </div>
@@ -308,14 +360,20 @@ const socket = io(API);
 
               <div className="mt-4 space-y-3 max-h-[250px] overflow-y-auto pr-2">
                 {winners.map((w) => (
-                  <div key={w._id || w.id} className="bg-gray-50 p-4 rounded-lg flex justify-between items-center">
-                    <div>
-                      <p className="text-black font-semibold">{w.name} 🏆</p>
-                      <p className="text-sm text-gray-600">🎯 Score: {w.score}</p>
-                      <p className="text-green-600 text-sm font-medium">💰 Prize: ₹{w.amount}</p>
-                    </div>
-                    <div className="text-gray-500 text-sm">{w.date}</div>
-                  </div>
+                  <div
+  key={w._id || w.id}
+  className="bg-yellow-50 p-4 rounded-xl shadow flex justify-between items-center border"
+>
+  <div>
+    <p className="text-black font-bold text-lg">🏆 {w.name}</p>
+    <p className="text-sm text-gray-600">Score: {w.score}</p>
+    <p className="text-green-600 font-semibold">₹{w.prize}</p>
+  </div>
+
+  <div className="text-gray-400 text-xs">
+    {new Date(w.date).toDateString()}
+  </div>
+</div>
                 ))}
               </div>
             </div>

@@ -1,9 +1,89 @@
 import { useNavigate } from "react-router-dom";
-import { API } from "../config";
+import { useState,useEffect } from "react";
 
 export default function Home() {
   const navigate = useNavigate();
+  const [selectedNumbers, setSelectedNumbers] = useState([]);
+  const [currentDraw, setCurrentDraw] = useState(null);
   const API = import.meta.env.VITE_API_URL || "https://golf-charity-platform-qlvk.onrender.com";
+
+
+  useEffect(() => {
+
+  const init = async () => {
+
+    // 1️⃣ check if user exists
+    let user = JSON.parse(localStorage.getItem("user"));
+
+    // 2️⃣ if not → create user automatically
+    if (!user) {
+      const res = await fetch(`${API}/api/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: "Player" + Math.floor(Math.random() * 1000),
+          email: "test" + Date.now() + "@mail.com"
+        })
+      });
+
+      user = await res.json();
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+
+    // 3️⃣ fetch draw
+    const drawRes = await fetch(`${API}/api/draw`);
+    const data = await drawRes.json();
+
+    const upcoming = data.find(d => d.status === "upcoming");
+    setCurrentDraw(upcoming || data[0]);
+  };
+
+  init();
+
+}, []);
+
+  const joinDraw = async () => {
+  if (!currentDraw) {
+    alert("No active draw");
+    return;
+    }
+    const drawRes = await fetch(`${API}/api/draw`);
+const data = await drawRes.json();
+const upcoming = data.find(d => d.status === "upcoming");
+setCurrentDraw(upcoming);
+
+if (selectedNumbers.length !== 5) {
+  alert("Select exactly 5 numbers");
+  return;
+}
+
+const user = JSON.parse(localStorage.getItem("user"));
+
+if (!user) {
+  alert("User not found");
+  return;
+}
+
+const res = await fetch(`${API}/api/draw/join`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    drawId: currentDraw._id,
+    userId: user._id,
+    name: user.name,
+    numbers: selectedNumbers
+  })
+});
+
+  await res.json();
+
+  alert("Joined draw successfully ✅");
+  setSelectedNumbers([]);
+};
 
   return (
     <div className="bg-gradient-to-b from-white via-green-50 to-white text-center">
@@ -69,6 +149,44 @@ export default function Home() {
           </button>
           
         </div>
+        {/* 🎯 NUMBER PICKER */}
+<div className="mt-10">
+  <h2 className="text-xl font-semibold text-gray-900 mb-4">
+    Pick Your Numbers (5)
+  </h2>
+
+  <div className="grid grid-cols-5 gap-3 max-w-md mx-auto">
+    {[...Array(45)].map((_, i) => {
+      const num = i + 1;
+      const selected = selectedNumbers.includes(num);
+
+      return (
+        <div
+          key={num}
+          onClick={() => {
+            if (selected) {
+              setSelectedNumbers(selectedNumbers.filter(n => n !== num));
+            } else if (selectedNumbers.length < 5) {
+              setSelectedNumbers([...selectedNumbers, num]);
+            }
+          }}
+          className={`w-10 h-10 flex items-center justify-center rounded-full cursor-pointer ${
+            selected ? "bg-green-600 text-white" : "bg-gray-200"
+          }`}
+        >
+          {num}
+        </div>
+      );
+    })}
+  </div>
+</div>
+        
+        <button
+          onClick={joinDraw}
+          className="mt-6 bg-green-700 text-white px-5 py-2 rounded-lg hover:scale-105 transition"
+        >
+          Join Current Draw
+        </button>
 
       </section>
 
@@ -178,5 +296,7 @@ export default function Home() {
 </footer>
 
     </div>
+
+    
   );
 }
