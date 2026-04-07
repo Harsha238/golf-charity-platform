@@ -149,44 +149,6 @@ const res = await fetch(`${API}/api/draw/join`, {
           </button>
           
         </div>
-        {/* 🎯 NUMBER PICKER */}
-<div className="mt-10">
-  <h2 className="text-xl font-semibold text-gray-900 mb-4">
-    Pick Your Numbers (5)
-  </h2>
-
-  <div className="grid grid-cols-5 gap-3 max-w-md mx-auto">
-    {[...Array(45)].map((_, i) => {
-      const num = i + 1;
-      const selected = selectedNumbers.includes(num);
-
-      return (
-        <div
-          key={num}
-          onClick={() => {
-            if (selected) {
-              setSelectedNumbers(selectedNumbers.filter(n => n !== num));
-            } else if (selectedNumbers.length < 5) {
-              setSelectedNumbers([...selectedNumbers, num]);
-            }
-          }}
-          className={`w-10 h-10 flex items-center justify-center rounded-full cursor-pointer ${
-            selected ? "bg-green-600 text-white" : "bg-gray-200"
-          }`}
-        >
-          {num}
-        </div>
-      );
-    })}
-  </div>
-</div>
-        
-        <button
-          onClick={joinDraw}
-          className="mt-6 bg-green-700 text-white px-5 py-2 rounded-lg hover:scale-105 transition"
-        >
-          Join Current Draw
-        </button>
 
       </section>
 
