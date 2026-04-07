@@ -50,18 +50,25 @@ golf-charity-platform/
 ├── backend/
 
 │   ├── models/
+
 │   ├── routes/
+
 │   ├── controllers/
+
 │   └── server.js
 │
 ├── frontend/
 
 │   ├── src/
+
 │   ├── pages/
+
 │   ├── components/
+
 │   └── App.jsx
 │
 ├── .env.example
+
 └── README.md
 
 ---
