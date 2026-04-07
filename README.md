@@ -2,17 +2,19 @@
 
 A full-stack web application where users submit golf scores to enter monthly draws, win rewards, and support charitable causes.
 
+🌐 Live Demo: https://golf-charity-platform-tau-taupe.vercel.app/
+
 ---
 
 ## 🚀 Features
 
 * 🎯 Submit golf scores (1–45 range)
-* 🏆 Automated monthly draw system
-* 💰 Prize pool distribution
-* ❤️ Charity management system
-* 👥 User tracking and management
-* 🔐 Authentication system (JWT-based)
-* ⚡ Real-time winner updates using Socket.io
+* 🏆 Automated draw system
+* 💰 Prize distribution based on winners
+* ❤️ Charity support integration
+* 👥 User creation & tracking
+* ⚡ Real-time updates (Socket.io)
+* 📊 Admin panel for managing draws
 * 📱 Fully responsive UI (mobile + desktop)
 
 ---
@@ -42,7 +44,6 @@ A full-stack web application where users submit golf scores to enter monthly dra
 
 ## 📂 Project Structure
 
-```
 golf-charity-platform/
 │
 ├── backend/
@@ -53,13 +54,12 @@ golf-charity-platform/
 │
 ├── frontend/
 │   ├── src/
-│   ├── components/
 │   ├── pages/
+│   ├── components/
 │   └── App.jsx
 │
 ├── .env.example
 └── README.md
-```
 
 ---
 
@@ -67,91 +67,84 @@ golf-charity-platform/
 
 ### 1️⃣ Clone the repository
 
-```bash
-git clone https://github.com/YOUR_USERNAME/golf-charity-platform.git
+git clone https://github.com/Harsha238/golf-charity-platform.git
 cd golf-charity-platform
-```
 
 ---
 
 ### 2️⃣ Install dependencies
 
-```bash
 cd backend
 npm install
 
 cd ../frontend
 npm install
-```
 
 ---
 
 ### 3️⃣ Setup environment variables
 
-Create `.env` in backend:
+#### backend/.env
 
-```
 PORT=5000
 MONGO_URI=your_mongodb_url
 CLIENT_URL=http://localhost:5173
 JWT_SECRET=your_secret_key
-```
 
-Create `.env` in frontend:
+#### frontend/.env
 
-```
 VITE_API_URL=http://localhost:5000
-```
 
 ---
 
 ### 4️⃣ Run the project
 
-Backend:
+#### Backend:
 
-```bash
 cd backend
 npm start
-```
 
-Frontend:
+#### Frontend:
 
-```bash
 cd frontend
 npm run dev
-```
 
 ---
 
-## 📸 Screenshots
+## 🌐 Deployment
 
-* Dashboard
-* Admin Panel
-* Draw System
-* Charity Management
-
-*(Add screenshots here later)*
+Frontend: Vercel
+Backend: Render
 
 ---
 
-## 🌐 Future Improvements
+## 🌟 Future Improvements
 
-* 🔔 Notifications system
+* 🔔 Notification system
 * 💳 Payment integration
 * 📊 Analytics dashboard
 * 📱 Mobile app version
+* 🔐 Full authentication system
 
 ---
 
 ## 👩‍💻 Author
 
-**Sai Harshitha Kummari**
+Sai Harshitha Kummari
 
-* GitHub: https://github.com/YOUR_USERNAME
-* LinkedIn: https://linkedin.com/in/YOUR_PROFILE
+GitHub: https://github.com/Harsha238
+LinkedIn: (Add your profile link)
 
 ---
 
 ## ⭐ Support
 
-If you like this project, give it a ⭐ on GitHub!
+If you like this project:
+Give it a ⭐ on GitHub
+Share it with others
+
+---
+
+## 📌 About
+
+Golf Charity Platform is a full-stack application that combines gaming, rewards, and social impact by allowing users to participate in draws while supporting charities.
