@@ -45,14 +45,17 @@ A full-stack web application where users submit golf scores to enter monthly dra
 ## 📂 Project Structure
 
 golf-charity-platform/
+
 │
 ├── backend/
+
 │   ├── models/
 │   ├── routes/
 │   ├── controllers/
 │   └── server.js
 │
 ├── frontend/
+
 │   ├── src/
 │   ├── pages/
 │   ├── components/
